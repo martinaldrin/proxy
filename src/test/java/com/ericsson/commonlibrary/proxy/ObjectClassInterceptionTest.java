@@ -36,10 +36,11 @@ import com.ericsson.commonlibrary.proxy.helpobjects.MySubImpl2;
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBean;
 import com.ericsson.commonlibrary.proxy.helpobjects.ToString;
 
-public class ObjectClassInterceptionTest {
+public class ObjectClassInterceptionTest extends BaseProxyEngineTest {
 
-    @Test
-    public void interfaceDelegateDefaultObjectMethodIfNotOverriden() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateDefaultObjectMethodIfNotOverriden(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new MySubImpl());
         assertTrue(interfaceDelegator.toString().contains("MyInterface"));
         assertTrue(interfaceDelegator.equals(interfaceDelegator));
@@ -51,15 +52,17 @@ public class ObjectClassInterceptionTest {
 
     }
 
-    @Test
-    public void interfaceDelegateToString() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateToString(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new ToString(),
                 new MySubImpl());
         assertEquals(interfaceDelegator.toString(), "ToString");
     }
 
-    @Test
-    public void objectDelegateToString() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void objectDelegateToString(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final ToString toString = new ToString("NOTPROXY");
         final ToString toStringProxy = Proxy.delegate(toString, new HashCode(123456), new ToString("PROXY"));
         assertEquals(toString.toString(), "NOTPROXY");
@@ -68,8 +71,9 @@ public class ObjectClassInterceptionTest {
         assertNotEquals(toStringProxy.hashCode(), toString.hashCode());
     }
 
-    @Test
-    public void interfaceDelegateEquals() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateEquals(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         // both true
         MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new Equals(true),
                 new MySubImpl());
@@ -103,8 +107,9 @@ public class ObjectClassInterceptionTest {
         assertFalse(interfaceDelegator2.equals(interfaceDelegator2));
     }
 
-    @Test
-    public void objectDelegateEquals() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void objectDelegateEquals(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         // both true
         Equals equals = new Equals(false);
@@ -142,8 +147,9 @@ public class ObjectClassInterceptionTest {
 
     }
 
-    @Test
-    public void interfaceDelegateHashCode() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateHashCode(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         final MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new HashCode(123456),
                 new MySubImpl());
@@ -152,16 +158,18 @@ public class ObjectClassInterceptionTest {
         assertEquals(interfaceDelegator.hashCode(), 123456);
     }
 
-    @Test
-    public void objectDelegateHashCode() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void objectDelegateHashCode(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final HashCode hashCode = new HashCode(111111);
         final HashCode hashCodeProxy = Proxy.delegate(hashCode, new HashCode(123456));
         assertEquals(hashCode.hashCode(), 111111);
         assertEquals(hashCodeProxy.hashCode(), 123456);
     }
 
-    @Test
-    public void objectDelegateHashCode2() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void objectDelegateHashCode2(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final HashCode hashCode = new HashCode(111111);
         final HashCode hashCodeProxy = Proxy.intercept(hashCode, new Interceptor() {
 

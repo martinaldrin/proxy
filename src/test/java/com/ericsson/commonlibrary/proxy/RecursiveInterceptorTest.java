@@ -26,13 +26,14 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RecursiveInterceptorTest {
+public class RecursiveInterceptorTest extends BaseProxyEngineTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecursiveInterceptorTest.class);
     private int inc = 0;
 
-    @Test
-    public void recursive() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void recursive(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         SomeImpl intercept = Proxy.intercept(new SomeImpl(), new InterceptorRecursive(new Interceptor() {
 
             @Override

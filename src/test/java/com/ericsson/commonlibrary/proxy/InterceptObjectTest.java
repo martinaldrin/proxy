@@ -39,7 +39,7 @@ import com.ericsson.commonlibrary.proxy.helpobjects.NonEmptyConstructorWithObjec
 import com.ericsson.commonlibrary.proxy.helpobjects.NonEmptyConstructorWithObject.WrapperObject;
 import com.ericsson.commonlibrary.proxy.helpobjects.Size10;
 
-public class InterceptObjectTest {
+public class InterceptObjectTest extends BaseProxyEngineTest {
 
     Interceptor size10Interceptor = new Interceptor() {
 
@@ -86,8 +86,9 @@ public class InterceptObjectTest {
         }
     };
 
-    @Test
-    public void multipleOfSameInterceptorThree() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleOfSameInterceptorThree(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final List<Integer> interceptorCreatedList = new ArrayList<Integer>();
 
         Interceptor addInterceptor = new Interceptor() {
@@ -124,8 +125,9 @@ public class InterceptObjectTest {
         assertEquals(interceptorCreatedList, correctList);
     }
 
-    @Test
-    public void multipleOfSameInterceptorTwo() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleOfSameInterceptorTwo(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final List<Integer> interceptorCreatedList = new ArrayList<Integer>();
 
         Interceptor addInterceptor = new Interceptor() {
@@ -160,8 +162,9 @@ public class InterceptObjectTest {
         assertEquals(interceptorCreatedList, correctList);
     }
 
-    @Test
-    public void multipleOfSameInterceptorButAnotherInBetween() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleOfSameInterceptorButAnotherInBetween(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final List<Integer> interceptorCreatedList = new ArrayList<Integer>();
 
         Interceptor addInterceptor = new Interceptor() {
@@ -197,14 +200,16 @@ public class InterceptObjectTest {
         assertEquals(interceptorCreatedList, correctList);
     }
 
-    @Test
-    public void oneInterceptor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneInterceptor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.intercept(new ArrayList<String>(), size10Interceptor);
         assertEquals(list.size(), 10);
     }
 
-    @Test
-    public void proxyOperatesOnPassedObject() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void proxyOperatesOnPassedObject(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         ArrayList<String> arrayList = new ArrayList<String>();
         arrayList.add("hello");
         arrayList.add("world");
@@ -224,36 +229,42 @@ public class InterceptObjectTest {
 
     }
 
-    @Test
-    public void ableToInterceptObjectWithNonEmptyConstructor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableToInterceptObjectWithNonEmptyConstructor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         NonEmptyConstructor obj = Proxy.intercept(new NonEmptyConstructor("Hello"), emptyInterceptor);
     }
 
-    @Test
-    public void ableToInterceptObjectWithNonEmptyConstructorObjectParam() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableToInterceptObjectWithNonEmptyConstructorObjectParam(ProxyConfiguration.Engine engine)
+            throws Exception {
+        setEngine(engine);
         Size10 size10 = new Size10();
         WrapperObject wrapperObject = new NonEmptyConstructorWithObject.WrapperObject(size10);
         NonEmptyConstructorWithObject nonEmptyConstructorWithObject = new NonEmptyConstructorWithObject(wrapperObject);
         NonEmptyConstructorWithObject obj = Proxy.intercept(nonEmptyConstructorWithObject, emptyInterceptor);
     }
 
-    @Test
-    public void defaultValueIfNoInterceptorChangesAnything() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void defaultValueIfNoInterceptorChangesAnything(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         NonEmptyConstructor obj = Proxy.intercept(new NonEmptyConstructor("Hello1"), emptyInterceptor,
                 NonEmptyConstructor.class.getMethod("get"));
         assertEquals(obj.get(), "Hello1");
     }
 
-    @Test
-    public void oneSingleMethodInterceptor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneSingleMethodInterceptor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.intercept(new ArrayList<String>(), return10InterceptorWithoutMethodFiltering,
                 List.class.getMethod("size"));
         assertEquals(list.size(), 10);
         assertTrue(list.add("hello"));
     }
 
-    @Test
-    public void twoSingleMethodInterceptor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void twoSingleMethodInterceptor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.intercept(new ArrayList<String>(), return10InterceptorWithoutMethodFiltering,
                 List.class.getMethod("size"));
         assertEquals(list.size(), 10);
@@ -267,8 +278,9 @@ public class InterceptObjectTest {
 
     }
 
-    @Test
-    public void testAddTimerToMethods() {
+    @Test(dataProvider = "proxyEngines")
+    public void testAddTimerToMethods(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         List<String> list = Proxy.addTimerToMethods(new ArrayList<String>());
         list.size();
         list.add("shortstring");
@@ -276,27 +288,32 @@ public class InterceptObjectTest {
         list.get(0);
     }
 
-    @Test(expectedExceptions = ProxyException.class)
-    public void throwsExceptionFinalObjects() throws Exception {
+    @Test(expectedExceptions = ProxyException.class, dataProvider = "proxyEngines")
+    public void throwsExceptionFinalObjects(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         String string = Proxy.intercept("FINALSTRING", emptyInterceptor);
         fail();
     }
 
-    @Test
-    public void constructorNeverCalledOnConstructionOfProxyObjects() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void constructorNeverCalledOnConstructionOfProxyObjects(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         ConstructorThrowsException obj = Proxy.intercept(
                 new ConstructorThrowsException(new StringBuilder(ConstructorThrowsException.DO_NOT_CRASH)),
                 emptyInterceptor);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void objectMethodThrowingException() throws Exception {
+    @Test(expectedExceptions = NullPointerException.class, dataProvider = "proxyEngines")
+    public void objectMethodThrowingException(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         ContainsThrowsException obj = Proxy.intercept(new ContainsThrowsException(), emptyInterceptor);
         obj.contains("");
     }
 
-    @Test
-    public void objectMethodThrowingExceptionAndInterceptorTryingToCatchIt() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void objectMethodThrowingExceptionAndInterceptorTryingToCatchIt(ProxyConfiguration.Engine engine)
+            throws Exception {
+        setEngine(engine);
         ContainsThrowsException obj = Proxy.intercept(new ContainsThrowsException(), new Interceptor() {
 
             @Override
@@ -311,8 +328,9 @@ public class InterceptObjectTest {
         Assert.assertTrue(obj.contains(""));
     }
 
-    @Test
-    public void twoInterceptors() {
+    @Test(dataProvider = "proxyEngines")
+    public void twoInterceptors(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         List<String> list = Proxy.intercept(new ArrayList<String>(), size10Interceptor);
         Proxy.intercept(list, sizeTimesTwoInterceptor);
         assertEquals(list.size(), 20);
@@ -322,8 +340,9 @@ public class InterceptObjectTest {
         assertEquals(list2.size(), 10);
     }
 
-    @Test
-    public void SameInterceptorOnTwoObjects() {
+    @Test(dataProvider = "proxyEngines")
+    public void SameInterceptorOnTwoObjects(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         List<String> list = Proxy.intercept(new ArrayList<String>(), size10Interceptor);
         assertEquals(list.size(), 10);
 

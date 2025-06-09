@@ -31,19 +31,21 @@ import java.net.URL;
 
 import org.testng.annotations.Test;
 
-public class JavaBeanSignedJarTest {
+public class JavaBeanSignedJarTest extends BaseProxyEngineTest {
     private static final String TCSH = "/bin/tcsh";
     private static final String BASH = "/bin/bash";
 
     private String shellPath;
 
-    @Test
-    public void javaBeanSingedJar() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanSingedJar(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         assertTrue(runCmd("external-sign.jar").contains("Setter for proxy bean works."));
     }
 
-    @Test
-    public void javaBeanNotSingedJar() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanNotSingedJar(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         assertTrue(runCmd("external.jar").contains("Setter for proxy bean works."));
     }
 

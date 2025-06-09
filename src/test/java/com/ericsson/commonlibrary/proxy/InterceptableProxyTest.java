@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBean;
 
-public class InterceptableProxyTest {
+public class InterceptableProxyTest extends BaseProxyEngineTest {
 
     Interceptor empty = new Interceptor() {
 
@@ -39,13 +39,15 @@ public class InterceptableProxyTest {
         }
     };
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void throwsExceptionOnNonProxyObjects() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "proxyEngines")
+    public void throwsExceptionOnNonProxyObjects(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         InterceptableProxy proxy = Proxy.getProxyInterface("noProxy");
     }
 
-    @Test
-    public void ableToGetInterceptorList() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableToGetInterceptorList(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PersonBean bean = Proxy.javaBean(PersonBean.class);
         InterceptableProxy proxy = Proxy.getProxyInterface(bean);
         assertFalse(proxy.getInterceptorList().isEmpty());
@@ -55,8 +57,9 @@ public class InterceptableProxyTest {
 
     }
 
-    @Test
-    public void ableToAddInterceptors() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableToAddInterceptors(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PersonBean bean = Proxy.javaBean(PersonBean.class);
         InterceptableProxy proxy = Proxy.getProxyInterface(bean);
         assertFalse(proxy.getInterceptorList().contains(empty));
@@ -64,8 +67,9 @@ public class InterceptableProxyTest {
         assertTrue(proxy.getInterceptorList().contains(empty));
     }
 
-    @Test
-    public void ableToRemoveInterceptors() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableToRemoveInterceptors(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PersonBean bean = Proxy.javaBean(PersonBean.class);
         InterceptableProxy proxy = Proxy.getProxyInterface(bean);
         assertFalse(proxy.getInterceptorList().contains(empty));

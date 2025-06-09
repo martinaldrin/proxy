@@ -36,10 +36,11 @@ import com.ericsson.commonlibrary.proxy.helpobjects.PersonBean;
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBeanAbstract;
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBeanClass;
 
-public class JavaBeanProxyTest {
+public class JavaBeanProxyTest extends BaseProxyEngineTest {
 
-    @Test
-    public void javaBeanTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("nisse");
 
@@ -52,99 +53,110 @@ public class JavaBeanProxyTest {
         assertEquals(person.getAge(), 20);
     }
 
-    @Test
-    public void multipleCallsToGetNameInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToGetNameInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("123");
         for (int i = 0; i < 1000; i++) {
-            System.out.println(i + person.getName());
+            System.out.println(getCurrentEngineName() + " " + i + person.getName());
         }
     }
 
-    @Test
-    public void multipleCallsToGetNameAbstractClassTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToGetNameAbstractClassTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
         person.setName("123");
         for (int i = 0; i < 1000; i++) {
-            System.out.println(i + person.getName());
+            System.out.println(getCurrentEngineName() + " " + i + person.getName());
         }
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void multipleCallsToGetNameClassTest() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "proxyEngines")
+    public void multipleCallsToGetNameClassTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanClass person = Proxy.javaBean(PersonBeanClass.class);
     }
 
-    @Test
-    public void multipleCallsToToStringInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToToStringInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
 
         for (int i = 0; i < 17; i++) {
-            System.out.println("" + i + person);
+            System.out.println(getCurrentEngineName() + " " + i + person);
         }
         Thread.sleep(5000);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person);
+            System.out.println(getCurrentEngineName() + " " + i + person);
         }
     }
 
-    @Test
-    public void multipleCallsToToStringAbstractClassTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToToStringAbstractClassTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person);
+            System.out.println(getCurrentEngineName() + " " + i + person);
         }
     }
 
-    @Test
-    public void multipleCallsToHashCodeInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToHashCodeInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person.hashCode());
+            System.out.println(getCurrentEngineName() + " " + i + person.hashCode());
         }
     }
 
-    @Test
-    public void multipleCallsToHashCodeAbstractTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToHashCodeAbstractTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person.hashCode());
+            System.out.println(getCurrentEngineName() + " " + i + person.hashCode());
         }
     }
 
-    @Test
-    public void multipleCallsToEqualsInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToEqualsInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person.equals(null));
+            System.out.println(getCurrentEngineName() + " " + i + person.equals(null));
         }
     }
 
-    @Test
-    public void multipleCallsToEqualsAbstractTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToEqualsAbstractTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
         for (int i = 0; i < 1000; i++) {
-            System.out.println("" + i + person.equals(null));
+            System.out.println(getCurrentEngineName() + " " + i + person.equals(null));
         }
     }
 
-    @Test
-    public void multipleCallsToToStringHashcodeEqualsInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void multipleCallsToToStringHashcodeEqualsInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         for (int i = 0; i < 10; i++) {
-            System.out.println("" + i + person);
+            System.out.println(getCurrentEngineName() + " " + i + person);
         }
         for (int i = 0; i < 10; i++) {
-            System.out.println("" + i + person.hashCode());
+            System.out.println(getCurrentEngineName() + " " + i + person.hashCode());
         }
         for (int i = 0; i < 10; i++) {
-            System.out.println("" + i + person.equals(null));
+            System.out.println(getCurrentEngineName() + " " + i + person.equals(null));
         }
 
     }
 
-    @Test
-    public void javaBeanNullDefaultTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanNullDefaultTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
 
         assertNull(person.getName());
@@ -160,8 +172,9 @@ public class JavaBeanProxyTest {
         assertEquals(person.getAgeInteger(), new Integer(20));
     }
 
-    @Test
-    public void javaBeanPrimitivesDefaultTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanPrimitivesDefaultTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
 
         assertEquals(person.getAge(), 0);
@@ -169,8 +182,9 @@ public class JavaBeanProxyTest {
         assertEquals(person.getAge(), 20);
     }
 
-    @Test
-    public void javaBeanAbstractTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanAbstractTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
         person.setName("nisse");
         assertEquals(person.getName(), "nisse");
@@ -178,8 +192,9 @@ public class JavaBeanProxyTest {
         assertEquals(person.getName(), "elis");
     }
 
-    @Test
-    public void javaBeanAbstractTest2() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanAbstractTest2(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBeanAbstract person = Proxy.javaBean(PersonBeanAbstract.class);
 
         person.setMale(true);
@@ -187,13 +202,15 @@ public class JavaBeanProxyTest {
         assertEquals(person.isMale(), true);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void throwsIllegalArgumentExceptionOnRegularClassesTest() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "proxyEngines")
+    public void throwsIllegalArgumentExceptionOnRegularClassesTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final ArrayList list = Proxy.javaBean(ArrayList.class);
     }
 
-    @Test
-    public void javaBeanWithInterceptorTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanWithInterceptorTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("emma");
         person.setMale(false);
@@ -218,8 +235,9 @@ public class JavaBeanProxyTest {
         assertFalse(person.toString().isEmpty());
     }
 
-    @Test
-    public void javaBeanWithDelegatorTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanWithDelegatorTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("erik");
         person.setMale(true);
@@ -237,8 +255,9 @@ public class JavaBeanProxyTest {
         assertEquals(person.getName(), "elis");
     }
 
-    @Test
-    public void addJavaBeanToOtherObjectTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void addJavaBeanToOtherObjectTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("elis");
         person.setMale(true);
@@ -259,8 +278,9 @@ public class JavaBeanProxyTest {
         assertEquals(((List) person2).get(0), "hello");
     }
 
-    @Test
-    public void addJavaBeanToExistingProxyTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void addJavaBeanToExistingProxyTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         person.setName("elis");
         person.setMale(true);
@@ -282,8 +302,9 @@ public class JavaBeanProxyTest {
         assertEquals(((List) person2).get(0), "hello");
     }
 
-    @Test
-    public void addJavaBeanToExistingProxyTest2() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void addJavaBeanToExistingProxyTest2(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         final PersonBean person = Proxy.javaBean(PersonBean.class);
         ArrayList<String> arrayList = new ArrayList<String>();
         arrayList = Proxy.addTimerToMethods(arrayList);

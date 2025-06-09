@@ -273,48 +273,27 @@ final class InterceptableProxyFactory {
     }
 
     static <T> T createANewInterfaceProxy(Class<?>... interfaces) {
-        InterceptableProxyFactory builder = new InterceptableProxyFactory(ProxyType.INTERFACE);
-        builder.setInterfaces(filterOnlyAccessableInterfaces(interfaces[0], interfaces));
-        return builder.build();
+        return ProxyEngineProvider.getCurrentFactory().createInterfaceProxy(interfaces);
     }
 
     static <T> T createANewInterfaceJavaBeanProxy(Class<?> toJavaBeanify) {
-        return createANewInterfaceProxy(addAdditionalSetMethodsToClass(toJavaBeanify));
+        return ProxyEngineProvider.getCurrentFactory().createInterfaceJavaBeanProxy(toJavaBeanify);
     }
 
     static <T> T createANewClassJavaBeanProxy(Class<?> toJavaBeanify, Class<?>... interfaces) {
-        Class<?> modifiedClass = addAdditionalSetMethodsToClass(toJavaBeanify);
-        return (T) createANewClassProxy(modifiedClass, interfaces);
+        return ProxyEngineProvider.getCurrentFactory().createClassJavaBeanProxy(toJavaBeanify, interfaces);
     }
 
     static <T> T createANewObjectProxyIfNeeded(final T objectToIntercept, Class<?>... interfaces) {
-        if (!Util.isNewProxyNeeded(objectToIntercept, makeAValidInterfaceArray(interfaces))) {
-            return objectToIntercept;
-        }
-
-        // was not a already proxy object -> create new one.
-        InterceptableProxyFactory builder = new InterceptableProxyFactory(ProxyType.OBJECT);
-
-        builder.setSuperclass(objectToIntercept.getClass());
-        builder.setInterfaces(filterOnlyAccessableInterfaces(objectToIntercept.getClass(), interfaces));
-        T proxy = builder.build();
-        Proxy.getProxyInterface(proxy).addInterceptor(new InterceptorDelegator(objectToIntercept));
-        return proxy;
+        return ProxyEngineProvider.getCurrentFactory().createObjectProxyIfNeeded(objectToIntercept, interfaces);
     }
 
     static <T> T createANewClassProxy(final Class<T> classToIntercept, Class<?>... interfaces) {
-        InterceptableProxyFactory builder = new InterceptableProxyFactory(ProxyType.CLASS);
-        builder.setSuperclass(classToIntercept);
-        builder.setInterfaces(filterOnlyAccessableInterfaces(classToIntercept, interfaces));
-        return builder.build();
+        return ProxyEngineProvider.getCurrentFactory().createClassProxy(classToIntercept, interfaces);
     }
 
     static <T> T createANewClassProxyWithArguments(final Class<T> classToIntercept, Object... constructorArgs) {
-        InterceptableProxyFactory builder = new InterceptableProxyFactory(ProxyType.CLASS);
-        builder.constructorArgs = constructorArgs;
-        builder.setSuperclass(classToIntercept);
-        builder.setInterfaces(new Class<?>[0]);
-        return builder.build();
+        return ProxyEngineProvider.getCurrentFactory().createClassProxyWithArguments(classToIntercept, constructorArgs);
     }
 
     private static class JavassistInterceptorMethodHandler implements MethodHandler {

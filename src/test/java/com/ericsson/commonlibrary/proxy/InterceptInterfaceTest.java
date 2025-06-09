@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBean;
 import com.ericsson.commonlibrary.proxy.helpobjects.PersonBeanClass;
 
-public class InterceptInterfaceTest {
+public class InterceptInterfaceTest extends BaseProxyEngineTest {
 
     Interceptor interceptor = new Interceptor() {
 
@@ -36,27 +36,29 @@ public class InterceptInterfaceTest {
         }
     };
 
-    @Test
-    public void interceptToString17TimesIssue() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interceptToString17TimesIssue(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PersonBean bean = Proxy.intercept(PersonBean.class, interceptor);
         for (int i = 0; i < 10; i++) {
-            System.out.println("i:" + i + bean.toString());
+            System.out.println("Engine: " + getCurrentEngineName() + " i:" + i + bean.toString());
         }
         Thread.sleep(1000);
         for (int i = 0; i < 10; i++) {
-            System.out.println("i:" + i + bean.toString());
+            System.out.println("Engine: " + getCurrentEngineName() + " i:" + i + bean.toString());
         }
     }
 
-    @Test
-    public void interceptToString17TimesIssueClass() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interceptToString17TimesIssueClass(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PersonBeanClass bean = Proxy.intercept(PersonBeanClass.class, interceptor);
         for (int i = 0; i < 10; i++) {
-            System.out.println("i:" + i + bean.toString());
+            System.out.println("Engine: " + getCurrentEngineName() + " i:" + i + bean.toString());
         }
         Thread.sleep(1000);
         for (int i = 0; i < 10; i++) {
-            System.out.println("i:" + i + bean.toString());
+            System.out.println("Engine: " + getCurrentEngineName() + " i:" + i + bean.toString());
         }
     }
 

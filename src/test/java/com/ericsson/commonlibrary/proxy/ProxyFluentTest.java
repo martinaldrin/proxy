@@ -42,7 +42,7 @@ import com.ericsson.commonlibrary.proxy.helpobjects.NonEmptyConstructorWithObjec
 import com.ericsson.commonlibrary.proxy.helpobjects.NonEmptyConstructorWithObject.WrapperObject;
 import com.ericsson.commonlibrary.proxy.helpobjects.Size10;
 
-public class ProxyFluentTest {
+public class ProxyFluentTest extends BaseProxyEngineTest {
 
     Interceptor emptyInterceptor = new Interceptor() {
 
@@ -52,16 +52,19 @@ public class ProxyFluentTest {
         }
     };
 
-    @Test
-    public void constructorArgumentTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void constructorArgumentTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         String string = "someString";
         NonEmptyConstructor nonEmptyConstructor = with(NonEmptyConstructor.class, string).interceptAll(emptyInterceptor)
                 .get();
         Assert.assertEquals(nonEmptyConstructor.get(), string);
     }
 
-    @Test
-    public void constructorArgumentHandlingCompatibleButMissmatchingTypesTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void constructorArgumentHandlingCompatibleButMissmatchingTypesTest(ProxyConfiguration.Engine engine)
+            throws Exception {
+        setEngine(engine);
 
         String string = "someString";
         NonEmptyConstructorCharSequence nonEmptyConstructor = with(NonEmptyConstructorCharSequence.class, string)
@@ -69,8 +72,10 @@ public class ProxyFluentTest {
         Assert.assertEquals(nonEmptyConstructor.get(), string);
     }
 
-    @Test
-    public void constructorArgumentHandlingCompatibleButMissmatchingTypesPackagePrivateTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void constructorArgumentHandlingCompatibleButMissmatchingTypesPackagePrivateTest(
+            ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         ArrayList<Object> list = new ArrayList<Object>();
         NonEmptyConstructorCharSequence nonEmptyConstructor = with(NonEmptyConstructorCharSequence.class, list)
@@ -78,21 +83,24 @@ public class ProxyFluentTest {
         Assert.assertEquals(nonEmptyConstructor.get(), "waslist");
     }
 
-    @Test
-    public void notCallingConstructorWithArgumentTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void notCallingConstructorWithArgumentTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         NonEmptyConstructor nonEmptyConstructor = with(NonEmptyConstructor.class).interceptAll(emptyInterceptor).get();
         Assert.assertEquals(nonEmptyConstructor.get(), null);
     }
 
-    @Test
-    public void NotCallingConstructorWithArgument2Test() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void NotCallingConstructorWithArgument2Test(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         NonEmptyConstructorThrowingException nonEmptyConstructor = with(NonEmptyConstructorThrowingException.class)
                 .interceptAll(emptyInterceptor).get();
         Assert.assertEquals(nonEmptyConstructor.get(), null);
     }
 
-    @Test
-    public void constructorObjectArgumentTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void constructorObjectArgumentTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         Size10 size10 = new Size10();
         WrapperObject wrapperObject = new NonEmptyConstructorWithObject.WrapperObject(size10);
         NonEmptyConstructorWithObject object = with(NonEmptyConstructorWithObject.class, wrapperObject)
@@ -100,8 +108,9 @@ public class ProxyFluentTest {
         Assert.assertEquals(object.getWrapperObject(), wrapperObject);
     }
 
-    @Test(expectedExceptions = ProxyException.class)
-    public void constructorArgumentWithInvalidArgTest() throws Exception {
+    @Test(expectedExceptions = ProxyException.class, dataProvider = "proxyEngines")
+    public void constructorArgumentWithInvalidArgTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         NonEmptyConstructor nonEmptyConstructor = with(NonEmptyConstructor.class, 1).interceptAll(emptyInterceptor)
                 .get();
     }
@@ -135,14 +144,16 @@ public class ProxyFluentTest {
         }
     };
 
-    @Test
-    public void oneInterceptor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneInterceptor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>()).interceptAll(size10Interceptor).get();
         assertEquals(list.size(), 10);
     }
 
-    @Test
-    public void twoInterceptors() {
+    @Test(dataProvider = "proxyEngines")
+    public void twoInterceptors(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>()).interceptAll(size10Interceptor)
                 .interceptAll(sizeTimesTwoInterceptor).get();
         assertEquals(list.size(), 20);
@@ -152,8 +163,9 @@ public class ProxyFluentTest {
         assertEquals(list2.size(), 10);
     }
 
-    @Test
-    public void oneSingleMethodInterceptor() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneSingleMethodInterceptor(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>())
                 .interceptMethod(return10InterceptorWithoutMethodFiltering, List.class.getMethod("size")).get();
         assertEquals(list.size(), 10);
@@ -168,8 +180,9 @@ public class ProxyFluentTest {
         }
     }
 
-    @Test
-    public void invocationHandlerAdapterTest() {
+    @Test(dataProvider = "proxyEngines")
+    public void invocationHandlerAdapterTest(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>()).interceptAll(new MyInvoctionHandler()).get();
         assertEquals(list.get(5), "get5");
         assertEquals(list.remove(0), "remove0");
@@ -188,27 +201,31 @@ public class ProxyFluentTest {
         }
     }
 
-    @Test
-    public void delegateBlockAdd() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delegateBlockAdd(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>()).delegate(new AddBlocker()).get();
         list.add("hello");
         assertEquals(list.size(), 0);
     }
 
-    @Test
-    public void delegateSize10() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delegateSize10(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = with(new ArrayList<String>()).delegate(new Size10()).get();
         assertEquals(list.size(), 10);
     }
 
-    @Test
-    public void interfaceInterception() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceInterception(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = with(List.class).interceptAll(size10Interceptor).get();
         assertEquals(list.size(), 10);
     }
 
-    @Test(expectedExceptions = ProxyException.class, expectedExceptionsMessageRegExp = ".*List does not need constructor arguments.*")
-    public void interfaceInterceptionWithConstructorArgs() throws Exception {
+    @Test(expectedExceptions = ProxyException.class, expectedExceptionsMessageRegExp = ".*List does not need constructor arguments.*", dataProvider = "proxyEngines")
+    public void interfaceInterceptionWithConstructorArgs(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         with(List.class, "");
     }
 }

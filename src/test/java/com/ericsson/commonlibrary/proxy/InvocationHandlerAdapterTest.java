@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-public class InvocationHandlerAdapterTest {
+public class InvocationHandlerAdapterTest extends BaseProxyEngineTest {
 
     @Test
     public void testInvocationHandlerAdapter() throws SecurityException, NoSuchMethodException {

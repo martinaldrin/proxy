@@ -34,10 +34,11 @@ import com.ericsson.commonlibrary.proxy.helpobjects.JavaBean;
 import com.ericsson.commonlibrary.proxy.helpobjects.JavaBeanAbstract;
 import com.ericsson.commonlibrary.proxy.helpobjects.JavaBeanAbstractWithSet;
 
-public class JavaBeanWithoutSettersProxyTest {
+public class JavaBeanWithoutSettersProxyTest extends BaseProxyEngineTest {
 
-    @Test
-    public void javaBeanSetMethodExists() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanSetMethodExists(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBean proxyBean = Proxy.javaBean(JavaBean.class);
         assertNull(proxyBean.getName());
         invokeSetName(proxyBean, "nisse");
@@ -47,8 +48,9 @@ public class JavaBeanWithoutSettersProxyTest {
 
     }
 
-    @Test
-    public void javaBeanInnerStaticTwice() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanInnerStaticTwice(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBean2 proxyBean = Proxy.javaBean(JavaBean2.class);
         JavaBean2 proxyBean2 = Proxy.javaBean(JavaBean2.class);
 
@@ -65,8 +67,9 @@ public class JavaBeanWithoutSettersProxyTest {
         assertEquals(proxyBean2.getName(), "kalle2");
     }
 
-    @Test
-    public void javaBeanInnerStatic() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanInnerStatic(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBean2 proxyBean = Proxy.javaBean(JavaBean2.class);
         assertNull(proxyBean.getName());
         invokeSetName(proxyBean, "nisse");
@@ -75,8 +78,9 @@ public class JavaBeanWithoutSettersProxyTest {
         assertEquals(proxyBean.getName(), "kalle");
     }
 
-    @Test
-    public void javaBeanInner() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanInner(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBean3 proxyBean = Proxy.javaBean(JavaBean3.class);
         assertNull(proxyBean.getName());
         invokeSetName(proxyBean, "nisse");
@@ -85,8 +89,9 @@ public class JavaBeanWithoutSettersProxyTest {
         assertEquals(proxyBean.getName(), "kalle");
     }
 
-    @Test
-    public void javaBeanAbstract() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanAbstract(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBeanAbstract proxyBean = Proxy.javaBean(JavaBeanAbstract.class);
         assertNull(proxyBean.getName());
         invokeSetName(proxyBean, "nisse");
@@ -95,8 +100,9 @@ public class JavaBeanWithoutSettersProxyTest {
         assertEquals(proxyBean.getName(), "kalle");
     }
 
-    @Test
-    public void javaBeanAbstractSetMethodExists() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanAbstractSetMethodExists(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBeanAbstractWithSet proxyBean = Proxy.javaBean(JavaBeanAbstractWithSet.class);
         assertNull(proxyBean.getName());
         invokeSetName(proxyBean, "nisse");
@@ -105,8 +111,9 @@ public class JavaBeanWithoutSettersProxyTest {
         assertEquals(proxyBean.getName(), "kalle");
     }
 
-    @Test
-    public void javaBeanIsMethod() {
+    @Test(dataProvider = "proxyEngines")
+    public void javaBeanIsMethod(ProxyConfiguration.Engine engine) {
+        setEngine(engine);
         JavaBeanIsMethod proxyBean = Proxy.javaBean(JavaBeanIsMethod.class);
         assertFalse(proxyBean.isTrue());
         invokeSetTrue(proxyBean, true);

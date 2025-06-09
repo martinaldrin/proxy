@@ -29,10 +29,11 @@ import com.ericsson.commonlibrary.proxy.Interceptor;
 import com.ericsson.commonlibrary.proxy.Invocation;
 import com.ericsson.commonlibrary.proxy.Proxy;
 
-public class DefaultInterfacesTest {
+public class DefaultInterfacesTest extends BaseProxyEngineTest {
 
-    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = ".*no implementation of method: getString.*")
-    public void interfaceNoImplementationTest() throws Exception {
+    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = ".*no implementation of method: getString.*", dataProvider = "proxyEngines")
+    public void interfaceNoImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(InterfaceWithDefault.class, new Interceptor() {
 
@@ -46,8 +47,9 @@ public class DefaultInterfacesTest {
         o.getString();
     }
 
-    @Test
-    public void interfaceCallsDefaultImplementationTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceCallsDefaultImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(InterfaceWithDefault.class, new Interceptor() {
 
@@ -62,8 +64,9 @@ public class DefaultInterfacesTest {
         assertTrue(2 == o.getParam(2));
     }
 
-    @Test
-    public void interfaceOverideDefaultImplementationTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceOverideDefaultImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(InterfaceWithDefault.class, new Interceptor() {
 
@@ -80,8 +83,9 @@ public class DefaultInterfacesTest {
         assertTrue(3 == o.getParam(2));
     }
 
-    @Test
-    public void interfaceExtensionNoImplementationTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceExtensionNoImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(Extension.class, new Interceptor() {
 
@@ -95,8 +99,9 @@ public class DefaultInterfacesTest {
         assertTrue(o.getString().isEmpty());
     }
 
-    @Test
-    public void interfaceExtensionCallsDefaultImplementationTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceExtensionCallsDefaultImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(Extension.class, new Interceptor() {
 
@@ -111,8 +116,9 @@ public class DefaultInterfacesTest {
         assertTrue(2 == o.getParam(2));
     }
 
-    @Test
-    public void interfaceExtensionOverideDefaultImplementationTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceExtensionOverideDefaultImplementationTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         InterfaceWithDefault o = Proxy.intercept(Extension.class, new Interceptor() {
 

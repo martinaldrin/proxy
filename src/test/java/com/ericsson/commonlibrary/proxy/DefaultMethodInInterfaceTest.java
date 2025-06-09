@@ -24,10 +24,11 @@ import org.testng.annotations.Test;
 
 import com.ericsson.commonlibrary.proxy.helpobjects.MyInterfaceWithDefaultMethod;
 
-public class DefaultMethodInInterfaceTest {
+public class DefaultMethodInInterfaceTest extends BaseProxyEngineTest {
 
-    @Test
-    public void defaultMethodInInterfaceTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void defaultMethodInInterfaceTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         MyInterfaceWithDefaultMethod proxy = Proxy.with(MyInterfaceWithDefaultMethod.class).interceptAll(i -> {
 

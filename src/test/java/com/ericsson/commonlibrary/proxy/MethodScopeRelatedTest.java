@@ -25,10 +25,11 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-public class MethodScopeRelatedTest {
+public class MethodScopeRelatedTest extends BaseProxyEngineTest {
 
-    @Test
-    public void ableOverridePackagePrivateMethodWithAPublic() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableOverridePackagePrivateMethodWithAPublic(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PackagePrivateMethod method = new PackagePrivateMethod("private");
         assertEquals(method.returnString(), "private");
 
@@ -40,8 +41,9 @@ public class MethodScopeRelatedTest {
         assertEquals(method.publicReturnString(), "public");
     }
 
-    @Test
-    public void ableOverridePublicMethodWithPackagePrivate() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void ableOverridePublicMethodWithPackagePrivate(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         PublicMethod method = new PublicMethod("public");
         assertEquals(method.returnString(), "public");
 

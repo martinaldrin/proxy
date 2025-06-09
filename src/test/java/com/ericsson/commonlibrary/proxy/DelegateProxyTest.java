@@ -45,23 +45,26 @@ import com.ericsson.commonlibrary.proxy.helpobjects.ReturnString1;
 import com.ericsson.commonlibrary.proxy.helpobjects.Size10;
 import com.ericsson.commonlibrary.proxy.helpobjects.ToString;
 
-public class DelegateProxyTest {
+public class DelegateProxyTest extends BaseProxyEngineTest {
 
-    @Test
-    public void oneDelegateBlockAdd() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneDelegateBlockAdd(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new AddBlocker());
         list.add("hello");
         assertEquals(list.size(), 0);
     }
 
-    @Test
-    public void oneDelegateSize10() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void oneDelegateSize10(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new Size10());
         assertEquals(list.size(), 10);
     }
 
-    @Test
-    public void notAbleToOverrideFinalMethod() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void notAbleToOverrideFinalMethod(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         FinalMethod method = new FinalMethod();
         assertEquals(method.finalmethod(), "final");
         assertEquals(method.notfinalmethod(), "notfinal");
@@ -71,8 +74,9 @@ public class DelegateProxyTest {
         assertEquals(method.notfinalmethod(), "override");
     }
 
-    @Test
-    public void operatesOnOriginalIfNoDelegateMethod() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void operatesOnOriginalIfNoDelegateMethod(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         ArrayList<String> arrayList = new ArrayList<String>();
         arrayList.add("hello");
         arrayList.add("world");
@@ -86,8 +90,9 @@ public class DelegateProxyTest {
         assertFalse(listProxy.contains("world2"));
     }
 
-    @Test
-    public void delagateWithNoInterfacesInvolved() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delagateWithNoInterfacesInvolved(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         ObjectReturnTrueFalse objFalse = new ObjectReturnTrueFalse(false);
         assertFalse(objFalse.returnBoolean());
 
@@ -97,8 +102,9 @@ public class DelegateProxyTest {
         assertFalse(objFalse.returnBoolean());
     }
 
-    @Test
-    public void interfaceDelegate() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegate(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new MySubImpl());
         assertEquals(interfaceDelegator.doSomething(), "MySubImpl");
         assertEquals(interfaceDelegator.doSomethingElse(), "MySubImpl2");
@@ -111,37 +117,42 @@ public class DelegateProxyTest {
         assertEquals(interfaceDelegator2.doSomethingWithInteger(1), 1);
     }
 
-    @Test
-    public void interfaceDelegateToStringDefaultIfNotOverriden() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateToStringDefaultIfNotOverriden(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new MySubImpl());
         assertTrue(interfaceDelegator.toString().contains("MyInterface"));
 
     }
 
-    @Test
-    public void interfaceDelegateToString() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceDelegateToString(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl2(), new ToString(),
                 new MySubImpl());
         assertEquals(interfaceDelegator.toString(), "ToString");
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void throwsExceptionIfMethodDoesNotExistInADelegate() throws Exception {
+    @Test(expectedExceptions = UnsupportedOperationException.class, dataProvider = "proxyEngines")
+    public void throwsExceptionIfMethodDoesNotExistInADelegate(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         MyInterface interfaceDelegator = Proxy.delegate(MyInterface.class, new MySubImpl());
         interfaceDelegator.doSomething();
         interfaceDelegator.doSomethingWithInteger(1);
     }
 
-    @Test
-    public void delegateCombinedWithInterfaceNarrower() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delegateCombinedWithInterfaceNarrower(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new AddBlocker());
         assertFalse(list.add("hello"));
         IAdd addObject = Proxy.changeInterface(IAdd.class, list);
         assertFalse(addObject.add("world"));
     }
 
-    @Test
-    public void delegateCombinedWithInterfaceNarrower2() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delegateCombinedWithInterfaceNarrower2(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = new ArrayList<String>();
         IAdd addObject = Proxy.changeInterface(IAdd.class, list);
         assertTrue(addObject.add("world"));
@@ -150,16 +161,18 @@ public class DelegateProxyTest {
         assertFalse(addObject.add("hello"));
     }
 
-    @Test
-    public void interfaceNarrower() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void interfaceNarrower(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = new ArrayList<String>();
         IAdd addObject = Proxy.changeInterface(IAdd.class, list);
         assertTrue(addObject.add("world"));
         assertEquals(list.size(), 1);
     }
 
-    @Test
-    public void delegateThrowsException() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void delegateThrowsException(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new ContainsThrowsException());
         try {
             list.contains("hello");
@@ -172,16 +185,18 @@ public class DelegateProxyTest {
         }
     }
 
-    @Test
-    public void twoDelegatesBlockAddAndSize10() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void twoDelegatesBlockAddAndSize10(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new Size10(), new AddBlocker());
         list.add("hello");
         assertEquals(list.size(), 10);
         assertFalse(list.contains("hello"));
     }
 
-    @Test
-    public void addDelegatesRuntime() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void addDelegatesRuntime(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(new ArrayList<String>(), new Size10());
         list.add("hello");
         assertEquals(list.size(), 10);
@@ -195,16 +210,18 @@ public class DelegateProxyTest {
         assertFalse(list.contains("world"));
     }
 
-    @Test
-    public void createNewProxyClass() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void createNewProxyClass(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
         List<String> list = Proxy.delegate(ArrayList.class, new Size10());
         list.add("hello");
         assertEquals(list.size(), 10);
         assertTrue(list.contains("hello"));
     }
 
-    @Test
-    public void polymorfisitcBehaviorOnClassDelegatesTest() throws Exception {
+    @Test(dataProvider = "proxyEngines")
+    public void polymorfisitcBehaviorOnClassDelegatesTest(ProxyConfiguration.Engine engine) throws Exception {
+        setEngine(engine);
 
         PolymorfismOnClassDelegatesImpl proxy = Proxy.delegate(PolymorfismOnClassDelegatesImpl.class,
                 new ReturnString1("3"));
